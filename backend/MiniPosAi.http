@@ -1,0 +1,20 @@
+@host = http://localhost:5206
+
+### Get Products
+GET {{host}}/api/data/Products
+
+### Ask (auto validate + execute)
+POST {{host}}/api/ai/ask
+Content-Type: application/json
+
+{
+  "question": "List products with stock below 50"
+}
+
+### Ask out-of-domain (should return Data not found)
+POST {{host}}/api/ai/ask
+Content-Type: application/json
+
+{
+  "question": "What is the weather in Karachi today?"
+}

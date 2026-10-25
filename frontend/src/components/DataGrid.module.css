@@ -1,0 +1,41 @@
+.wrap {
+  overflow: auto;
+  border: 1px solid #d8dde6;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.table th,
+.table td {
+  padding: 0.65rem 0.85rem;
+  text-align: left;
+  border-bottom: 1px solid #e8ecf2;
+  white-space: nowrap;
+}
+
+.table th {
+  background: #f4f6fa;
+  font-weight: 600;
+  color: #334155;
+  position: sticky;
+  top: 0;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.empty {
+  color: #64748b;
+  margin: 1rem 0;
+}

@@ -1,0 +1,17 @@
+export const SAMPLE_QUESTIONS = [
+  "List all products with stock less than 50",
+  "Show the top 10 most expensive products",
+  "How many products are in each category?",
+  "List all customers and their email addresses",
+  "Show total sales amount for each customer",
+  "Which customers have more than 2 sales?",
+  "Show all sales from January 2026",
+  "What is the total revenue from all sales?",
+  "List sale items with quantity greater than 2",
+  "Show products in the Beverages category",
+  "Find the average product price by category",
+  "Show the 5 most recent sales",
+  "Which products were sold the most by quantity?",
+  "List customers who bought Cheddar or Milk related products",
+  "Show sales with total amount greater than 20",
+] as const;
