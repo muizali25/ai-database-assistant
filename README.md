@@ -1,53 +1,181 @@
 # Mini POS AI Query Assistant
 
-Simple Mini POS demo with a .NET 9 Web API backend and a Next.js frontend. Browse table data, ask natural-language questions via Google Gemini, review the generated SQL, then approve and execute read-only queries.
+A small demo app where you can:
 
-## Prerequisites
+- Browse POS tables (Products, Categories, Customers, Sales)
+- Ask questions in normal English
+- Get answers from your database using Google Gemini
 
-- .NET 9 SDK
-- Node.js 18+
-- SQL Server LocalDB (or update the connection string)
-- A [Google Gemini API key](https://aistudio.google.com/apikey)
+This project has two folders:
 
-## Backend setup
+- `backend` → .NET 9 Web API + SQL Server
+- `frontend` → Next.js website
 
-```bash
-cd backend
-dotnet user-secrets init
-dotnet user-secrets set "Gemini:ApiKey" "YOUR_GEMINI_API_KEY"
-dotnet run --launch-profile http
-```
+---
 
-API listens on `http://localhost:5206`.
+## What you need before starting
 
-Optional: copy `appsettings.Local.json.example` to `appsettings.Local.json` and fill in the key (that file is gitignored). If you use a local file, load it from `Program.cs` or keep using user secrets.
+Install these on your computer:
 
-### Endpoints
+1. **[.NET 9 SDK](https://dotnet.microsoft.com/download)**
+2. **[Node.js](https://nodejs.org/)** (version 18 or newer)
+3. **SQL Server LocalDB**  
+   - Comes with Visual Studio / SQL Server Express on Windows  
+   - Or use any SQL Server and change the connection string
+4. A free **[Google Gemini API key](https://aistudio.google.com/apikey)**
 
-| Method | Path | Purpose |
-|--------|------|---------|
-| GET | `/api/data/{tableName}` | Return rows for `Products`, `Categories`, `Customers`, or `Sales` |
-| POST | `/api/ai/ask` | `{ "question": "..." }` → Gemini SQL, server-side validate, execute |
+---
 
-Only validated read-only `SELECT` queries against allowed POS tables are executed. Out-of-domain or unsafe questions return `{ "found": false, "message": "Data not found" }`.
-
-## Frontend setup
+## Clone the project
 
 ```bash
-cd frontend
-cp .env.local.example .env.local
-npm install
-npm run dev
+git clone https://github.com/YOUR_USERNAME/ai-database-assistant.git
+cd ai-database-assistant
 ```
 
-Open `http://localhost:3000`.
+---
 
-## Database
+## Database setup (important)
 
-On startup the API creates the `MiniPosAi` database (LocalDB by default) with five tables and hardcoded sample data:
+**You do NOT need to run migrations.**
+
+This project does **not** use EF migrations.
+
+When you start the backend the first time, it will:
+
+1. Create the database `MiniPosAi` automatically
+2. Create all 5 tables automatically
+3. Insert sample data automatically (products, customers, sales, etc.)
+
+So after clone, you only need SQL Server LocalDB running. No extra DB scripts.
+
+### Tables created automatically
 
 - Categories
 - Products
 - Customers
 - Sales
 - SaleItems
+
+### Default connection string
+
+In `backend/appsettings.json`:
+
+```text
+Server=(localdb)\mssqllocaldb;Database=MiniPosAi;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true
+```
+
+If you use another SQL Server, change only this connection string.
+
+### Note about Development mode
+
+In Development, the backend may delete and recreate the database on startup so sample data stays fresh. That is normal for this demo.
+
+---
+
+## Step 1: Start the backend
+
+```bash
+cd backend
+dotnet user-secrets init
+dotnet user-secrets set "Gemini:ApiKey" "PASTE_YOUR_GEMINI_KEY_HERE"
+dotnet run --launch-profile http
+```
+
+Backend URL:
+
+```text
+http://localhost:5206
+```
+
+### Other way to set Gemini key
+
+1. Copy `backend/appsettings.Local.json.example`
+2. Rename copy to `appsettings.Local.json`
+3. Put your key inside
+4. Run the backend
+
+Do **not** commit your real API key to GitHub.
+
+---
+
+## Step 2: Start the frontend
+
+Open a new terminal:
+
+```bash
+cd frontend
+copy .env.local.example .env.local
+npm install
+npm run dev
+```
+
+On Mac/Linux use:
+
+```bash
+cp .env.local.example .env.local
+```
+
+Frontend URL:
+
+```text
+http://localhost:3000
+```
+
+---
+
+## How to use the app
+
+1. Open `http://localhost:3000`
+2. Use the table dropdown to view data
+3. Click a sample question, or open the AI chat button
+4. Ask a question about products, customers, or sales
+5. Wait for the progress bar
+6. Results show on the main page
+
+If the question is not related to this POS data, the app shows **Data not found**.
+
+---
+
+## Quick API check (optional)
+
+```text
+GET  http://localhost:5206/api/data/Products
+POST http://localhost:5206/api/ai/ask
+Body: { "question": "List products with low stock" }
+```
+
+---
+
+## Common problems
+
+**Backend fails to start / database error**  
+- Make sure LocalDB is installed  
+- Or update the connection string for your SQL Server
+
+**AI questions fail**  
+- Check that your Gemini API key is set correctly
+
+**Frontend cannot load data**  
+- Make sure backend is running on `http://localhost:5206`  
+- Check `frontend/.env.local` has:
+
+```text
+NEXT_PUBLIC_API_URL=http://localhost:5206
+```
+
+---
+
+## Project structure
+
+```text
+ai-database-assistant/
+  backend/     # .NET API, Gemini, SQL validation, seed data
+  frontend/    # Next.js UI, table view, AI chat
+```
+
+---
+
+## License
+
+See the `LICENSE` file in this repository.
